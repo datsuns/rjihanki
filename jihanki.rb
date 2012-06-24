@@ -6,8 +6,8 @@ class Jihanki
 
 	def initialize
 		@total = 0
-		@allStock = Array.new
-		@allStock << Stock.new( Juice.new('cola',120), 5 )
+		@allStock = Hash.new
+		@allStock['cola'] =  Stock.new( Juice.new('cola',120), 5 )
 	end
 
 	def get_total
@@ -29,7 +29,7 @@ class Jihanki
 		retval
 	end
 
-	def get_stock
-		@allStock
+	def get_stock name
+		@allStock[name]
 	end
 end

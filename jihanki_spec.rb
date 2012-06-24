@@ -102,9 +102,12 @@ describe Jihanki do
 	end
 
 	it "初期状態で在庫取得するとコーラが5本ある" do
-		@jihanki.get_stock[0].num.should eq(5)
-		@jihanki.get_stock[0].juice.name.should eq('cola')
-		@jihanki.get_stock[0].juice.price.should eq(120)
+		@jihanki.get_stock("cola").num.should eq(5)
+		@jihanki.get_stock("cola").juice.name.should eq('cola')
+		@jihanki.get_stock("cola").juice.price.should eq(120)
+	end
+	it "存在しない在庫取得するとNilが返る" do
+		@jihanki.get_stock("sprite").should eq(nil)
 	end
 end
 
