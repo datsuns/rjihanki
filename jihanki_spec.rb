@@ -68,5 +68,21 @@ describe Jihanki do
 		@jihanki.payback.should eq(1000)
 		@jihanki.get_total.should eq(0)
 	end
+	
+	it "想定外のお金を入力するとそのまま返ってくる" do
+		@jihanki.insert(1).should eq(1)
+		@jihanki.get_total.should eq(0)
+
+		@jihanki.insert(5).should eq(5)
+		@jihanki.get_total.should eq(0)
+
+		@jihanki.insert(5000).should eq(5000)
+		@jihanki.get_total.should eq(0)
+	end
+
+	it "お金が許容されるかどうかを判定する。" do
+		Money::money?(Money::YEN_10).should eq(true)
+		Money::money?(Money::YEN_50).should eq(true)
+	end
 end
 

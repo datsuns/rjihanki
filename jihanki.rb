@@ -10,7 +10,12 @@ class Jihanki
 	end
 
 	def insert money
-		@total += money
+		if Money.money? money then
+			@total += money
+			return @total
+		else
+			return money
+		end
 	end
 
 	def payback
