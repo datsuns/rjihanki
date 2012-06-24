@@ -10,7 +10,7 @@ class Jihanki
 	end
 
 	def insert money
-		if Money.money? money then
+		if Money.useable? money then
 			@total += money
 			return @total
 		else

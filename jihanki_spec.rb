@@ -81,8 +81,8 @@ describe Jihanki do
 	end
 
 	it "お金が許容されるかどうかを判定する。" do
-		Money::money?(Money::YEN_10).should eq(true)
-		Money::money?(Money::YEN_50).should eq(true)
+		Money::useable?(Money::YEN_10).should eq(true)
+		Money::useable?(Money::YEN_50).should eq(true)
 	end
 end
 

@@ -7,7 +7,7 @@ class Money
 
 	RANGE = [ YEN_10, YEN_50, YEN_100, YEN_500, YEN_500, YEN_1000 ]
 
-	def self.money? input
+	def self.useable? input
 		RANGE.include? input
 	end
 end
