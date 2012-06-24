@@ -2,6 +2,8 @@
 
 require './jihanki'
 require './money'
+require './juice'
+require './stock'
 describe Jihanki do
 	before(:each) do 
 		@jihanki = Jihanki.new
@@ -83,6 +85,26 @@ describe Jihanki do
 	it "お金が許容されるかどうかを判定する。" do
 		Money::useable?(Money::YEN_10).should eq(true)
 		Money::useable?(Money::YEN_50).should eq(true)
+	end
+
+	it "ジュースの生成" do
+		juice = Juice.new( 'cola', 120 )
+		juice.name.should eq('cola')
+		juice.price.should eq(120)
+	end
+
+	it "ストックの生成" do
+		juice = Juice.new( 'cola', 120 )
+		stock = Stock.new( juice, 5 )
+		stock.juice.name.should eq('cola')
+		stock.juice.price.should eq(120)
+		stock.num.should eq(5)
+	end
+
+	it "初期状態で在庫取得するとコーラが5本ある" do
+		@jihanki.get_stock[0].num.should eq(5)
+		@jihanki.get_stock[0].juice.name.should eq('cola')
+		@jihanki.get_stock[0].juice.price.should eq(120)
 	end
 end
 

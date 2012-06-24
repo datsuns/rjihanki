@@ -1,8 +1,13 @@
+require './stock'
+
 class Jihanki
 	@total
+	@allStock
 
 	def initialize
 		@total = 0
+		@allStock = Array.new
+		@allStock << Stock.new( Juice.new('cola',120), 5 )
 	end
 
 	def get_total
@@ -22,5 +27,9 @@ class Jihanki
 		retval = @total
 		@total = 0
 		retval
+	end
+
+	def get_stock
+		@allStock
 	end
 end
