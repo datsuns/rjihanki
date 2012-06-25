@@ -166,6 +166,8 @@ describe Jihanki do
 		@jihanki.insert Money::YEN_1000
 		@jihanki.buy 'cola'
 		@jihanki.get_sales.should eq(120)
+		@jihanki.payback.should eq(880)
 	end
+
 end
 

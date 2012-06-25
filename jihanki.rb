@@ -54,7 +54,9 @@ class Jihanki
 	# 購入
 	def buy name
 		return nil if not buyable? name
+
 		@sales += @stocks[name].juice.price
+		@total -= @stocks[name].juice.price
 		@stocks[name].num -= 1
 		@stocks[name].juice
 	end
