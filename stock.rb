@@ -5,6 +5,10 @@ class Stock
 		@num = num
 	end
 
+	def -=( num )
+		@num -= num
+	end
+
 	attr_reader :juice
 	attr_accessor :num
 end

@@ -64,12 +64,12 @@ class Jihanki
 
 		@sales += @stocks[name].juice.price
 		@total -= @stocks[name].juice.price
-		@stocks[name].num -= 1
+		@stocks[name] - 1
 		@stocks[name].juice
 	end
 
 	#=====================================
-	# 購入
+	# 売上金額取得
 	def get_sales
 		@sales
 	end
