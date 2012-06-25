@@ -16,9 +16,6 @@ class Jihanki
 		@stocks[COLA.name] = Stock.new( COLA, 5 )
 		@stocks[REDBULL.name] = Stock.new( REDBULL, 5 )
 		@stocks[WATER.name] = Stock.new( WATER, 5 )
-
-		@list = Array.new
-		@list << COLA << REDBULL << WATER
 	end
 
 	#=====================================
@@ -81,8 +78,8 @@ class Jihanki
 	# 購入可能リスト取得
 	def buyable_list
 		list = Array.new
-		@list.each do |juice|
-			list << juice.name if @total >= juice.price
+		@stocks.each do |key, stock|
+			list << stock.juice.name if stock.num > 0 and @total >= stock.juice.price
 		end
 		list
 	end
