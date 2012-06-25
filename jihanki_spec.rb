@@ -100,10 +100,24 @@ describe Jihanki do
 		stock.num.should eq(5)
 	end
 
-	it "初期状態で在庫取得するとコーラが5本ある" do
-		@jihanki.get_stock("cola").num.should eq(5)
-		@jihanki.get_stock("cola").juice.name.should eq('cola')
-		@jihanki.get_stock("cola").juice.price.should eq(120)
+	it "初期状態で在庫取得するとコーラ,レッドブル、水が5本ずつある" do
+		cola = @jihanki.get_stock(Juice::COLA)
+
+		cola.num.should eq(5)
+		cola.juice.name.should eq('cola')
+		cola.juice.price.should eq(120)
+
+		redbull = @jihanki.get_stock(Juice::REDBULL)
+
+		redbull.num.should eq(5)
+		redbull.juice.name.should eq('redbull')
+		redbull.juice.price.should eq(200)
+
+		water = @jihanki.get_stock(Juice::WATER)
+
+		water.num.should eq(5)
+		water.juice.name.should eq('water')
+		water.juice.price.should eq(100)
 	end
 
 	it "存在しない在庫取得するとNilが返る" do
@@ -169,5 +183,14 @@ describe Jihanki do
 		@jihanki.get_total.should eq(0)
 	end
 
+	it "120円投入するとコーラと水が購入可能になる" do
+		@jihanki.insert Money::YEN_100
+		@jihanki.insert Money::YEN_10
+		@jihanki.insert Money::YEN_10
+		list = @jihanki.buyable_list
+		list.include?(Juice::COLA).should eq(true)
+		list.include?(Juice::WATER).should eq(true)
+		list.include?(Juice::REDBULL).should eq(false)
+	end
 end
 

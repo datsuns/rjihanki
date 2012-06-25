@@ -2,13 +2,23 @@ require './stock'
 require './juice'
 
 class Jihanki
+	COLA = Juice.new( Juice::COLA, 120 )
+	REDBULL = Juice.new( Juice::REDBULL, 200 )
+	WATER = Juice.new( Juice::WATER, 100 )
+
 	#=====================================
 	# 初期化
 	def initialize
 		@total = 0
 		@sales = 0
+
 		@stocks = Hash.new
-		@stocks['cola'] = Stock.new( Juice.new('cola',120), 5 )
+		@stocks[COLA.name] = Stock.new( COLA, 5 )
+		@stocks[REDBULL.name] = Stock.new( REDBULL, 5 )
+		@stocks[WATER.name] = Stock.new( WATER, 5 )
+
+		@list = Array.new
+		@list << COLA << REDBULL << WATER
 	end
 
 	#=====================================
@@ -65,5 +75,15 @@ class Jihanki
 	# 購入
 	def get_sales
 		@sales
+	end
+
+	#=====================================
+	# 購入可能リスト取得
+	def buyable_list
+		list = Array.new
+		@list.each do |juice|
+			list << juice.name if @total >= juice.price
+		end
+		list
 	end
 end
