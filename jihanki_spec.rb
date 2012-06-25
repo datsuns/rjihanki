@@ -106,8 +106,29 @@ describe Jihanki do
 		@jihanki.get_stock("cola").juice.name.should eq('cola')
 		@jihanki.get_stock("cola").juice.price.should eq(120)
 	end
+
 	it "存在しない在庫取得するとNilが返る" do
 		@jihanki.get_stock("sprite").should eq(nil)
+	end
+
+	it "120円投入するとコーラが買える事がわかる" do
+		@jihanki.insert(Money::YEN_100)
+		@jihanki.insert(Money::YEN_10)
+		@jihanki.insert(Money::YEN_10)
+		@jihanki.buyable('cola').should eq(true)
+	end
+
+	it "90円投入ではコーラが買えないことがわかる" do
+		@jihanki.insert(Money::YEN_10)
+		@jihanki.insert(Money::YEN_10)
+		@jihanki.insert(Money::YEN_10)
+		@jihanki.insert(Money::YEN_10)
+		@jihanki.insert(Money::YEN_50)
+		@jihanki.buyable('cola').should eq(false)
+	end
+
+	it "在庫に無いジュースは購入不可能" do
+		@jihanki.buyable('sprite').should eq(false)
 	end
 end
 

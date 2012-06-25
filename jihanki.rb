@@ -1,13 +1,14 @@
 require './stock'
+require './juice'
 
 class Jihanki
 	@total
-	@allStock
+	@stocks
 
 	def initialize
 		@total = 0
-		@allStock = Hash.new
-		@allStock['cola'] =  Stock.new( Juice.new('cola',120), 5 )
+		@stocks = Hash.new
+		@stocks['cola'] = Stock.new( Juice.new('cola',120), 5 )
 	end
 
 	def get_total
@@ -24,12 +25,18 @@ class Jihanki
 	end
 
 	def payback
-		retval = @total
+		ret = @total
 		@total = 0
-		retval
+		ret
 	end
 
 	def get_stock name
-		@allStock[name]
+		@stocks[name]
+	end
+
+	def buyable name
+		stock = get_stock name
+		return false if stock == nil 
+		stock.num and @total >= stock.juice.price
 	end
 end
