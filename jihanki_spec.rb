@@ -12,12 +12,11 @@ describe Jihanki do
 	after(:each) do 
 	end
 
-
-	it "get_total() with initial state " do
+	it "初期状態での払い戻しは0円" do
 		@jihanki.get_total.should eq(0)
 	end
 
-	it "money" do 
+	it "お金の定義の確認" do 
 		Money::YEN_10.should eq(10)
 		Money::YEN_50.should eq(50)
 	end
@@ -27,7 +26,7 @@ describe Jihanki do
 		@jihanki.get_total.should  eq(10)
 	end
 
-	it "投入 50円を入れたら10円取得できる" do
+	it "投入 50円を入れたら50円取得できる" do
 		@jihanki.insert(Money::YEN_50)
 		@jihanki.get_total.should  eq(50)
 	end
@@ -167,6 +166,7 @@ describe Jihanki do
 		@jihanki.buy 'cola'
 		@jihanki.get_sales.should eq(120)
 		@jihanki.payback.should eq(880)
+		@jihanki.get_total.should eq(0)
 	end
 
 end
