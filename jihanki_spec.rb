@@ -115,20 +115,57 @@ describe Jihanki do
 		@jihanki.insert(Money::YEN_100)
 		@jihanki.insert(Money::YEN_10)
 		@jihanki.insert(Money::YEN_10)
-		@jihanki.buyable('cola').should eq(true)
+		@jihanki.buyable?('cola').should eq(true)
 	end
 
 	it "90円投入ではコーラが買えないことがわかる" do
-		@jihanki.insert(Money::YEN_10)
-		@jihanki.insert(Money::YEN_10)
-		@jihanki.insert(Money::YEN_10)
-		@jihanki.insert(Money::YEN_10)
-		@jihanki.insert(Money::YEN_50)
-		@jihanki.buyable('cola').should eq(false)
+		@jihanki.insert Money::YEN_10
+		@jihanki.insert Money::YEN_10
+		@jihanki.insert Money::YEN_10
+		@jihanki.insert Money::YEN_10
+		@jihanki.insert Money::YEN_50
+		@jihanki.buyable?('cola').should eq(false)
 	end
 
 	it "在庫に無いジュースは購入不可能" do
-		@jihanki.buyable('sprite').should eq(false)
+		@jihanki.buyable?('sprite').should eq(false)
+	end
+
+	it "120円投入してコーラが購入できる" do
+		@jihanki.insert Money::YEN_100
+		@jihanki.insert Money::YEN_10
+		@jihanki.insert Money::YEN_10
+		juice = @jihanki.buy('cola')
+		juice.name.should eq('cola')
+		juice.price.should eq(120)
+		@jihanki.get_stock('cola').num.should eq(4)
+	end
+
+	it "50円投入してコーラ購入をしても何も変わらない" do
+		@jihanki.insert Money::YEN_50
+		@jihanki.buy('cola').should eq(nil)
+		@jihanki.get_stock('cola').num.should eq(5)
+	end
+
+	it "在庫がない場合に何もしない" do
+		@jihanki.insert Money::YEN_1000
+		@jihanki.buy 'cola'
+		@jihanki.buy 'cola'
+		@jihanki.buy 'cola'
+		@jihanki.buy 'cola'
+		@jihanki.buy 'cola'
+		@jihanki.buyable?('cola').should eq(false)
+		@jihanki.buy('cola').should eq(nil)
+		@jihanki.get_stock('cola').num.should eq(0)
+
+		@jihanki.buy('cola').should eq(nil)
+		@jihanki.get_stock('cola').num.should eq(0)
+	end
+
+	it "コーラを一本買ったら売上金額120円を取得できる" do
+		@jihanki.insert Money::YEN_1000
+		@jihanki.buy 'cola'
+		@jihanki.get_sales.should eq(120)
 	end
 end
 
