@@ -1,4 +1,8 @@
 class Juice
+	COLA = 'cola'
+	REDBULL = 'redbull'
+	WATER = 'water'
+
 	def initialize( name, price )
 		@name = name
 		@price = price
