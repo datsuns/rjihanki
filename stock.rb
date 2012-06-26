@@ -5,7 +5,7 @@ class Stock
 		@num = num
 	end
 
-	def -=( num )
+	def -( num )
 		@num -= num
 	end
 
