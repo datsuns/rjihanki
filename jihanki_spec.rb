@@ -87,15 +87,15 @@ describe Jihanki do
 	end
 
 	it "ジュースの生成" do
-		juice = Juice.new( 'cola', 120 )
-		juice.name.should eq('cola')
+		juice = Juice.new( Juice::COLA, 120 )
+		juice.name.should eq(Juice::COLA)
 		juice.price.should eq(120)
 	end
 
 	it "ストックの生成" do
-		juice = Juice.new( 'cola', 120 )
+		juice = Juice.new( Juice::COLA, 120 )
 		stock = Stock.new( juice, 5 )
-		stock.juice.name.should eq('cola')
+		stock.juice.name.should eq(Juice::COLA)
 		stock.juice.price.should eq(120)
 		stock.num.should eq(5)
 	end
@@ -104,19 +104,19 @@ describe Jihanki do
 		cola = @jihanki.get_stock(Juice::COLA)
 
 		cola.num.should eq(5)
-		cola.juice.name.should eq('cola')
+		cola.juice.name.should eq(Juice::COLA)
 		cola.juice.price.should eq(120)
 
 		redbull = @jihanki.get_stock(Juice::REDBULL)
 
 		redbull.num.should eq(5)
-		redbull.juice.name.should eq('redbull')
+		redbull.juice.name.should eq(Juice::REDBULL)
 		redbull.juice.price.should eq(200)
 
 		water = @jihanki.get_stock(Juice::WATER)
 
 		water.num.should eq(5)
-		water.juice.name.should eq('water')
+		water.juice.name.should eq(Juice::WATER)
 		water.juice.price.should eq(100)
 	end
 
@@ -128,7 +128,7 @@ describe Jihanki do
 		@jihanki.insert(Money::YEN_100)
 		@jihanki.insert(Money::YEN_10)
 		@jihanki.insert(Money::YEN_10)
-		@jihanki.buyable?('cola').should eq(true)
+		@jihanki.buyable?(Juice::COLA).should eq(true)
 	end
 
 	it "90円投入ではコーラが買えないことがわかる" do
@@ -137,7 +137,7 @@ describe Jihanki do
 		@jihanki.insert Money::YEN_10
 		@jihanki.insert Money::YEN_10
 		@jihanki.insert Money::YEN_50
-		@jihanki.buyable?('cola').should eq(false)
+		@jihanki.buyable?(Juice::COLA).should eq(false)
 	end
 
 	it "在庫に無いジュースは購入不可能" do

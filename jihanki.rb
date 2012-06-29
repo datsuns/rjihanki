@@ -31,12 +31,9 @@ class Jihanki
 	#=====================================
 	# 投入
 	def insert money
-		if Money.useable? money then
-			@total += money
-			return @total
-		else
-			return money
-		end
+		return money if not Money.useable? money
+		@total += money
+		@total
 	end
 
 	#=====================================
