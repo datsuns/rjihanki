@@ -80,7 +80,7 @@ class Jihanki
 	def buyable_list
 		list = Array.new
 		@stocks.each do |key, stock|
-			list << stock.juice.name if stock.num > 0 and @total >= stock.juice.price
+			list << stock.juice.name if buyable? stock.juice.name
 		end
 		list
 	end
