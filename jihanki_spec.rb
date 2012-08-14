@@ -5,6 +5,12 @@ require './money'
 require './juice'
 require './stock'
 
+describe Money do
+	it "定義が正しい" do 
+		Money::YEN_10.should eq(10)
+		Money::YEN_50.should eq(50)
+	end
+end
 
 
 describe Jihanki do
@@ -14,11 +20,6 @@ describe Jihanki do
     its(:get_total){ should eq(0) }
   end
 
-
-	it "お金の定義の確認" do 
-		Money::YEN_10.should eq(10)
-		Money::YEN_50.should eq(50)
-	end
 
 	it "投入 10円を入れたら10円取得できる" do
 		subject.insert(Money::YEN_10)
