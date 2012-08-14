@@ -31,11 +31,24 @@ describe Jihanki do
   subject{ Jihanki.new }
 
   share_examples_for '存在しない在庫を取得するとnilを返す' do
-      it{ subject.get_stock("sprite").should eq nil }
+    it{ subject.get_stock("sprite").should eq nil }
+  end
+
+  share_examples_for '現在の投入金額を払い戻せる' do
+    it{
+      current = subject.get_total
+      subject.payback.should eq current
+      subject.get_total.should eq 0
+    }
+  end
+
+  share_examples_for 'デフォルト動作ができる' do
+    it_should_behave_like '存在しない在庫を取得するとnilを返す' 
+    it_should_behave_like '現在の投入金額を払い戻せる' 
   end
 
   context '初期状態' do
-    it_should_behave_like '存在しない在庫を取得するとnilを返す' 
+    it_should_behave_like 'デフォルト動作ができる' 
     its(:get_total){ should eq 0 }
     its(:payback){ should eq 0 }
 
@@ -82,7 +95,7 @@ describe Jihanki do
       jihanki
     end
 
-    it_should_behave_like '存在しない在庫を取得するとnilを返す' 
+    it_should_behave_like 'デフォルト動作ができる' 
     its(:get_total){ should eq 10 }
 
     it "払い戻しで10円を返す" do
@@ -98,7 +111,7 @@ describe Jihanki do
       jihanki
     end
 
-    it_should_behave_like '存在しない在庫を取得するとnilを返す' 
+    it_should_behave_like 'デフォルト動作ができる' 
     its(:get_total){ should eq 50 }
   end
 
@@ -111,14 +124,14 @@ describe Jihanki do
       jihanki
     end
 
-    it_should_behave_like '存在しない在庫を取得するとnilを返す' 
+    it_should_behave_like 'デフォルト動作ができる' 
     its(:buyable_list){ should include Juice::COLA  }
     its(:buyable_list){ should include Juice::WATER }
     its(:buyable_list){ should_not include Juice::REDBULL }
   end
 
   context '想定外のお金を投入するとそのまま戻ってくる' do
-    it_should_behave_like '存在しない在庫を取得するとnilを返す' 
+    it_should_behave_like 'デフォルト動作ができる' 
     context '1円を投入' do
       it{ subject.insert(1).should eq 1 }
     end
@@ -139,7 +152,7 @@ describe Jihanki do
       j.insert Money::YEN_1000
       j
     }
-    it_should_behave_like '存在しない在庫を取得するとnilを返す' 
+    it_should_behave_like 'デフォルト動作ができる' 
     its(:get_total){ should eq 1050 }
   end
 
