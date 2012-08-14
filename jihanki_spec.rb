@@ -165,16 +165,6 @@ describe Jihanki do
 		subject.get_total.should eq 0
 	end
 
-
-
-
-	it "120円投入するとコーラが買える事がわかる" do
-		subject.insert Money::YEN_100
-		subject.insert Money::YEN_10
-		subject.insert Money::YEN_10
-		subject.buyable?(Juice::COLA).should eq true
-	end
-
 	it "90円投入ではコーラが買えないことがわかる" do
 		subject.insert Money::YEN_10
 		subject.insert Money::YEN_10
