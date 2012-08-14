@@ -30,7 +30,12 @@ end
 describe Jihanki do
   subject{ Jihanki.new }
 
+  share_examples_for '存在しない在庫を取得するとnilを返す' do
+      it{ subject.get_stock("sprite").should eq nil }
+  end
+
   context '初期状態' do
+    it_should_behave_like '存在しない在庫を取得するとnilを返す' 
     its(:get_total){ should eq(0) }
     its(:payback){ should eq(0) }
 
@@ -63,6 +68,7 @@ describe Jihanki do
       jihanki
     end
 
+    it_should_behave_like '存在しない在庫を取得するとnilを返す' 
     its(:get_total){ should eq 10 }
 
     it "払い戻しで10円を返す" do
@@ -78,10 +84,12 @@ describe Jihanki do
       jihanki
     end
 
+    it_should_behave_like '存在しない在庫を取得するとnilを返す' 
     its(:get_total){ should eq(50) }
   end
 
   context '想定外のお金を投入するとそのまま戻ってくる' do
+    it_should_behave_like '存在しない在庫を取得するとnilを返す' 
     context '1円を投入' do
       it{ subject.insert(1).should eq(1) }
     end
@@ -102,6 +110,7 @@ describe Jihanki do
       j.insert(Money::YEN_1000)
       j
     }
+    it_should_behave_like '存在しない在庫を取得するとnilを返す' 
     its(:get_total){ should eq 1050 }
   end
 
@@ -129,9 +138,6 @@ describe Jihanki do
 	end
 
 
-	it "存在しない在庫取得するとNilが返る" do
-		subject.get_stock("sprite").should eq(nil)
-	end
 
 	it "120円投入するとコーラが買える事がわかる" do
 		subject.insert(Money::YEN_100)
