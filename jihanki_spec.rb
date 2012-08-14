@@ -10,6 +10,11 @@ describe Money do
 		Money::YEN_10.should eq(10)
 		Money::YEN_50.should eq(50)
 	end
+
+	it "使用可能なお金が規定できている" do
+		Money::useable?(Money::YEN_10).should eq(true)
+		Money::useable?(Money::YEN_50).should eq(true)
+	end
 end
 
 
@@ -81,10 +86,6 @@ describe Jihanki do
 		subject.get_total.should eq(0)
 	end
 
-	it "お金が許容されるかどうかを判定する。" do
-		Money::useable?(Money::YEN_10).should eq(true)
-		Money::useable?(Money::YEN_50).should eq(true)
-	end
 
 	it "ジュースの生成" do
 		juice = Juice.new( Juice::COLA, 120 )
