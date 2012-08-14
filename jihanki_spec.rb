@@ -24,6 +24,7 @@ describe Jihanki do
   context '初期状態' do
     its(:get_total){ should eq(0) }
     its(:payback){ should eq(0) }
+
     it 'コーラの在庫が5本ある' do
       cola = subject.get_stock(Juice::COLA)
       cola.num.should eq(5)
@@ -71,6 +72,20 @@ describe Jihanki do
     its(:get_total){ should eq(50) }
   end
 
+  context '想定外のお金を投入するとそのまま戻ってくる' do
+    context '1円を投入' do
+      it{ subject.insert(1).should eq(1) }
+    end
+
+    context '5円を投入' do
+      it{ subject.insert(5).should eq(5) }
+    end
+
+    context '5000円を投入' do
+      it{ subject.insert(5000).should eq(5000) }
+    end
+  end
+
 
 	it "投入 二回投入して合計を取得できる" do
 		subject.insert(Money::YEN_50)
@@ -100,18 +115,6 @@ describe Jihanki do
 		subject.payback.should eq(1000)
 		subject.get_total.should eq(0)
 	end
-	
-	it "想定外のお金を入力するとそのまま返ってくる" do
-		subject.insert(1).should eq(1)
-		subject.get_total.should eq(0)
-
-		subject.insert(5).should eq(5)
-		subject.get_total.should eq(0)
-
-		subject.insert(5000).should eq(5000)
-		subject.get_total.should eq(0)
-	end
-
 
 	it "ジュースの生成" do
 		juice = Juice.new( Juice::COLA, 120 )
