@@ -41,10 +41,18 @@ describe Jihanki do
       subject.get_total.should eq 0
     }
   end
+
+  share_examples_for '購入可能' do |name, price, payback|
+    it do
+      subject.buy name
+      subject.get_sales.should eq price
+      subject.payback.should eq payback
+      subject.get_total.should eq 0
+    end
+  end
   
   share_examples_for '購入不可能' do |name|
-    it{ subject.buy(name).should eq nil }
-    it{ subject.get_stock(name).num.should eq 0 }
+    it{ subject.buyable?(name).should be_false }
   end
 
   share_examples_for 'デフォルト動作ができる' do
@@ -117,6 +125,7 @@ describe Jihanki do
     end
 
     it_should_behave_like 'デフォルト動作ができる' 
+    it_should_behave_like '購入不可能', Juice::COLA
     its(:get_total){ should eq 50 }
   end
 
@@ -156,6 +165,12 @@ describe Jihanki do
       juice.price.should eq 120
       subject.get_stock(Juice::COLA).num.should eq 4
     end
+    it "コーラを買って売上金額とお釣り(0円)を取得できる" do
+      subject.buy 'cola'
+      subject.get_sales.should eq 120
+      subject.payback.should eq 0
+      subject.get_total.should eq 0
+    end
   end
 
   context '想定外のお金を投入するとそのまま戻ってくる' do
@@ -182,13 +197,9 @@ describe Jihanki do
     }
     it_should_behave_like 'デフォルト動作ができる' 
     its(:get_total){ should eq 1050 }
+    it_should_behave_like '購入可能', Juice::COLA, 120, 930
   end
 
-	it "50円投入してコーラ購入をしても何も変わらない" do
-		subject.insert Money::YEN_50
-		subject.buy('cola').should eq nil
-		subject.get_stock('cola').num.should eq 5
-	end
 
   context '在庫が切れた状態' do
     subject do
@@ -204,13 +215,6 @@ describe Jihanki do
     it_should_behave_like '購入不可能', Juice::COLA
   end
 
-	it "コーラを一本買ったら売上金額120円を取得できる" do
-		subject.insert Money::YEN_1000
-		subject.buy 'cola'
-		subject.get_sales.should eq 120
-		subject.payback.should eq 880
-		subject.get_total.should eq 0
-	end
 
 end
 
