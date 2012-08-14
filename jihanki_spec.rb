@@ -17,6 +17,11 @@ describe Money do
 	end
 end
 
+describe Juice, 'with "Juice::COLA", and "120"' do
+  subject{ Juice.new Juice::COLA, 120 }
+  its(:name){ should eq Juice::COLA }
+  its(:price){ should eq 120 }
+end
 
 describe Jihanki do
   subject{ Jihanki.new }
@@ -114,12 +119,6 @@ describe Jihanki do
 		subject.insert(Money::YEN_1000)
 		subject.payback.should eq(1000)
 		subject.get_total.should eq(0)
-	end
-
-	it "ジュースの生成" do
-		juice = Juice.new( Juice::COLA, 120 )
-		juice.name.should eq(Juice::COLA)
-		juice.price.should eq(120)
 	end
 
 	it "ストックの生成" do
