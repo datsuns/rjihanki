@@ -41,6 +41,11 @@ describe Jihanki do
       subject.get_total.should eq 0
     }
   end
+  
+  share_examples_for '購入不可能' do |name|
+    it{ subject.buy(name).should eq nil }
+    it{ subject.get_stock(name).num.should eq 0 }
+  end
 
   share_examples_for 'デフォルト動作ができる' do
     it_should_behave_like '存在しない在庫を取得するとnilを返す' 
@@ -145,6 +150,12 @@ describe Jihanki do
     its(:buyable_list){ should include Juice::COLA  }
     its(:buyable_list){ should include Juice::WATER }
     its(:buyable_list){ should_not include Juice::REDBULL }
+    it 'コーラを購入すると在庫数が減る' do
+      juice = subject.buy Juice::COLA
+      juice.name.should eq Juice::COLA
+      juice.price.should eq 120
+      subject.get_stock(Juice::COLA).num.should eq 4
+    end
   end
 
   context '想定外のお金を投入するとそのまま戻ってくる' do
@@ -173,36 +184,25 @@ describe Jihanki do
     its(:get_total){ should eq 1050 }
   end
 
-	it "120円投入してコーラが購入できる" do
-		subject.insert Money::YEN_100
-		subject.insert Money::YEN_10
-		subject.insert Money::YEN_10
-		juice = subject.buy 'cola'
-		juice.name.should eq 'cola'
-		juice.price.should eq 120
-		subject.get_stock('cola').num.should eq 4
-	end
-
 	it "50円投入してコーラ購入をしても何も変わらない" do
 		subject.insert Money::YEN_50
 		subject.buy('cola').should eq nil
 		subject.get_stock('cola').num.should eq 5
 	end
 
-	it "在庫がない場合に何もしない" do
-		subject.insert Money::YEN_1000
-		subject.buy 'cola'
-		subject.buy 'cola'
-		subject.buy 'cola'
-		subject.buy 'cola'
-		subject.buy 'cola'
-		subject.buyable?('cola').should eq false
-		subject.buy('cola').should eq nil
-		subject.get_stock('cola').num.should eq 0
-
-		subject.buy('cola').should eq nil
-		subject.get_stock('cola').num.should eq 0
-	end
+  context '在庫が切れた状態' do
+    subject do
+      jihanki = Jihanki.new
+      jihanki.insert Money::YEN_1000
+      jihanki.buy 'cola'
+      jihanki.buy 'cola'
+      jihanki.buy 'cola'
+      jihanki.buy 'cola'
+      jihanki.buy 'cola'
+      jihanki
+    end
+    it_should_behave_like '購入不可能', Juice::COLA
+  end
 
 	it "コーラを一本買ったら売上金額120円を取得できる" do
 		subject.insert Money::YEN_1000
