@@ -6,15 +6,10 @@ require './juice'
 require './stock'
 
 describe Money do
-	it "定義が正しい" do 
-		Money::YEN_10.should eq(10)
-		Money::YEN_50.should eq(50)
-	end
-
-	it "使用可能なお金が規定できている" do
-		Money::useable?(Money::YEN_10).should eq(true)
-		Money::useable?(Money::YEN_50).should eq(true)
-	end
+  it{ Money::YEN_10.should eq 10 }
+  it{ Money::YEN_50.should eq 50 }
+	it{ Money.useable?(Money::YEN_10).should be_true }
+	it{ Money.useable?(Money::YEN_50).should be_true }
 end
 
 describe Juice, 'with "Juice::COLA", and "120"' do
