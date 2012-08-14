@@ -59,6 +59,20 @@ describe Jihanki do
       water.juice.name.should eq(Juice::WATER)
       water.juice.price.should eq(100)
     end
+
+    it '投入と払い戻しを繰り返せる' do
+      subject.insert(Money::YEN_10)
+      subject.payback.should eq(10)
+      subject.get_total.should eq(0)
+
+      subject.insert(Money::YEN_100)
+      subject.payback.should eq(100)
+      subject.get_total.should eq(0)
+
+      subject.insert(Money::YEN_1000)
+      subject.payback.should eq(1000)
+      subject.get_total.should eq(0)
+    end
   end
 
   context '10円投入状態' do
@@ -123,19 +137,6 @@ describe Jihanki do
 		subject.get_total.should eq(0)
 	end
 
-	it "投入して払い戻しの3回繰り返し" do
-		subject.insert(Money::YEN_10)
-		subject.payback.should eq(10)
-		subject.get_total.should eq(0)
-
-		subject.insert(Money::YEN_100)
-		subject.payback.should eq(100)
-		subject.get_total.should eq(0)
-
-		subject.insert(Money::YEN_1000)
-		subject.payback.should eq(1000)
-		subject.get_total.should eq(0)
-	end
 
 
 
