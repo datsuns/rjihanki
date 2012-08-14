@@ -173,21 +173,6 @@ describe Jihanki do
     its(:get_total){ should eq 1050 }
   end
 
-
-	it "10円,100円,1000円投入して払い戻しで1110円を返す" do
-		subject.insert Money::YEN_10
-		subject.insert Money::YEN_100
-		subject.insert Money::YEN_1000
-		subject.payback.should eq 1110
-		subject.get_total.should eq 0
-	end
-
-
-	it "在庫に無いジュースは購入不可能" do
-		subject.insert Money::YEN_1000
-		subject.buyable?('sprite').should eq false
-	end
-
 	it "120円投入してコーラが購入できる" do
 		subject.insert Money::YEN_100
 		subject.insert Money::YEN_10
