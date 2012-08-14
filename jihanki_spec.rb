@@ -115,6 +115,23 @@ describe Jihanki do
     its(:get_total){ should eq 50 }
   end
 
+  context '90円投入状態' do
+    subject do
+      jihanki = Jihanki.new
+      jihanki.insert Money::YEN_50
+      jihanki.insert Money::YEN_10
+      jihanki.insert Money::YEN_10
+      jihanki.insert Money::YEN_10
+      jihanki.insert Money::YEN_10
+      jihanki
+    end
+
+    it_should_behave_like 'デフォルト動作ができる' 
+    its(:buyable_list){ should_not include Juice::COLA  }
+    its(:buyable_list){ should_not include Juice::WATER }
+    its(:buyable_list){ should_not include Juice::REDBULL }
+  end
+
   context '120円投入状態' do
     subject do
       jihanki = Jihanki.new
@@ -165,14 +182,6 @@ describe Jihanki do
 		subject.get_total.should eq 0
 	end
 
-	it "90円投入ではコーラが買えないことがわかる" do
-		subject.insert Money::YEN_10
-		subject.insert Money::YEN_10
-		subject.insert Money::YEN_10
-		subject.insert Money::YEN_10
-		subject.insert Money::YEN_50
-		subject.buyable?(Juice::COLA).should eq false
-	end
 
 	it "在庫に無いジュースは購入不可能" do
 		subject.insert Money::YEN_1000
