@@ -23,13 +23,44 @@ describe Jihanki do
 
   context '初期状態' do
     its(:get_total){ should eq(0) }
+    its(:payback){ should eq(0) }
+    it 'コーラの在庫が5本ある' do
+      cola = subject.get_stock(Juice::COLA)
+      cola.num.should eq(5)
+      cola.juice.name.should eq(Juice::COLA)
+      cola.juice.price.should eq(120)
+    end
+
+    it 'レッドブルの在庫が5本ある' do
+      redbull = subject.get_stock(Juice::REDBULL)
+      redbull.num.should eq(5)
+      redbull.juice.name.should eq(Juice::REDBULL)
+      redbull.juice.price.should eq(200)
+    end
+
+    it '水の在庫が5本ある' do
+      water = subject.get_stock(Juice::WATER)
+      water.num.should eq(5)
+      water.juice.name.should eq(Juice::WATER)
+      water.juice.price.should eq(100)
+    end
   end
 
+  context '10円投入状態' do
+    subject do
+      jihanki = Jihanki.new
+      jihanki.insert(Money::YEN_10)
+      jihanki
+    end
 
-	it "投入 10円を入れたら10円取得できる" do
-		subject.insert(Money::YEN_10)
-		subject.get_total.should  eq(10)
-	end
+    its(:get_total){ should eq 10 }
+
+    it "払い戻しで10円を返す" do
+      subject.payback.should eq(10)
+      subject.get_total.should eq(0)
+    end
+  end
+
 
 	it "投入 50円を入れたら50円取得できる" do
 		subject.insert(Money::YEN_50)
@@ -42,16 +73,6 @@ describe Jihanki do
 		subject.get_total.should  eq(1050)
 	end
 
-	it "投入せずに払い戻しで0円を返す" do
-		subject.payback.should eq(0)
-		subject.get_total.should eq(0)
-	end
-
-	it "10円投入して払い戻しで10円を返す" do
-		subject.insert(Money::YEN_10)
-		subject.payback.should eq(10)
-		subject.get_total.should eq(0)
-	end
 
 	it "10円,100円,1000円投入して払い戻しで1110円を返す" do
 		subject.insert(Money::YEN_10)
@@ -101,25 +122,6 @@ describe Jihanki do
 		stock.num.should eq(5)
 	end
 
-	it "初期状態で在庫取得するとコーラ,レッドブル、水が5本ずつある" do
-		cola = subject.get_stock(Juice::COLA)
-
-		cola.num.should eq(5)
-		cola.juice.name.should eq(Juice::COLA)
-		cola.juice.price.should eq(120)
-
-		redbull = subject.get_stock(Juice::REDBULL)
-
-		redbull.num.should eq(5)
-		redbull.juice.name.should eq(Juice::REDBULL)
-		redbull.juice.price.should eq(200)
-
-		water = subject.get_stock(Juice::WATER)
-
-		water.num.should eq(5)
-		water.juice.name.should eq(Juice::WATER)
-		water.juice.price.should eq(100)
-	end
 
 	it "存在しない在庫取得するとNilが返る" do
 		subject.get_stock("sprite").should eq(nil)
