@@ -95,12 +95,15 @@ describe Jihanki do
     end
   end
 
-
-	it "投入 二回投入して合計を取得できる" do
-		subject.insert(Money::YEN_50)
-		subject.insert(Money::YEN_1000)
-		subject.get_total.should  eq(1050)
-	end
+  context '二回で合計1050円投入する' do
+    subject{
+      j = Jihanki.new
+      j.insert(Money::YEN_50)
+      j.insert(Money::YEN_1000)
+      j
+    }
+    its(:get_total){ should eq 1050 }
+  end
 
 
 	it "10円,100円,1000円投入して払い戻しで1110円を返す" do
