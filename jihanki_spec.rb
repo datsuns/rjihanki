@@ -5,12 +5,15 @@ require './money'
 require './juice'
 require './stock'
 
+
+
 describe Jihanki do
   subject{ Jihanki.new }
 
-	it "初期状態での払い戻しは0円" do
-		subject.get_total.should eq(0)
-	end
+  context '初期状態' do
+    its(:get_total){ should eq(0) }
+  end
+
 
 	it "お金の定義の確認" do 
 		Money::YEN_10.should eq(10)
