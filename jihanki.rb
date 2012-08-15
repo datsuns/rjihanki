@@ -4,11 +4,16 @@
 #
 require './stock'
 require './juice'
+require './money'
 
 class Jihanki
 	COLA = Juice.new( Juice::COLA, 120 )
 	REDBULL = Juice.new( Juice::REDBULL, 200 )
 	WATER = Juice.new( Juice::WATER, 100 )
+  MONEY_RANGE = [
+    Money::YEN_10, Money::YEN_50, Money::YEN_100,
+    Money::YEN_500, Money::YEN_500, Money::YEN_1000
+  ]
 
 	#=====================================
 	# 初期化
@@ -31,7 +36,7 @@ class Jihanki
 	#=====================================
 	# 投入
 	def insert money
-		return money if not Money.useable? money
+		return money if not useable? money
 		@total += money
 		@total
 	end
@@ -83,5 +88,9 @@ class Jihanki
 			list << stock.juice.name if buyable? stock.juice.name
 		end
 		list
+	end
+
+	def useable? input
+		MONEY_RANGE.include? input
 	end
 end

@@ -5,11 +5,10 @@ require './money'
 require './juice'
 require './stock'
 
+
 describe Money do
   it{ Money::YEN_10.should eq 10 }
   it{ Money::YEN_50.should eq 50 }
-	it{ Money.useable?(Money::YEN_10).should be_true }
-	it{ Money.useable?(Money::YEN_50).should be_true }
 end
 
 describe Juice, 'with "Juice::COLA", and "120"' do
@@ -28,8 +27,6 @@ describe Stock, '5本のコーラの在庫' do
 end
 
 describe Jihanki do
-  subject{ Jihanki.new }
-
   share_examples_for '存在しない在庫を取得するとnilを返す' do
     it{ subject.get_stock("sprite").should eq nil }
   end
@@ -39,6 +36,12 @@ describe Jihanki do
       current = subject.get_total
       subject.payback.should eq current
       subject.get_total.should eq 0
+    }
+  end
+
+  share_examples_for '在庫確認' do |name, num_of_stocks, price|
+    it{
+      subject.get_stock(name).num.should eq num_of_stocks
     }
   end
 
@@ -61,9 +64,26 @@ describe Jihanki do
   end
 
   context '初期状態' do
+    before{ @jihanki = Jihanki.new  }
+    subject{ @jihanki }
+
     it_should_behave_like 'デフォルト動作ができる' 
+    it_should_behave_like '在庫確認', Juice::COLA, 5, 120
+
     its(:get_total){ should eq 0 }
     its(:payback){ should eq 0 }
+
+    describe '在庫が5本ある' do
+      subject{ @jihanki.get_stock Juice::COLA }
+      its(:num){ should eq 5 }
+
+      describe 'コーラを指定して在庫取得できる' do
+        subject{ @jihanki.get_stock(Juice::COLA).juice }
+        its(:name){ should eq Juice::COLA }
+        its(:price){ should eq 120 }
+      end
+
+    end
 
     it 'コーラの在庫が5本ある' do
       cola = subject.get_stock Juice::COLA
@@ -102,19 +122,15 @@ describe Jihanki do
   end
 
   context '10円投入状態' do
-    subject do
-      jihanki = Jihanki.new
-      jihanki.insert Money::YEN_10
-      jihanki
+    before do
+      @jihanki = Jihanki.new
+      @jihanki.insert Money::YEN_10
     end
+    subject{ @jihanki } 
 
     it_should_behave_like 'デフォルト動作ができる' 
     its(:get_total){ should eq 10 }
-
-    it "払い戻しで10円を返す" do
-      subject.payback.should eq 10
-      subject.get_total.should eq 0
-    end
+    its(:payback){ should eq 10 }
   end
 
   context '50円投入状態' do
