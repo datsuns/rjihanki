@@ -5,7 +5,6 @@ require './money'
 require './juice'
 require './stock'
 
-
 describe Money do
   it{ Money::YEN_10.should eq 10 }
   it{ Money::YEN_50.should eq 50 }
@@ -19,11 +18,15 @@ describe Juice, 'with "Juice::COLA", and "120"' do
 end
 
 describe Stock, '5本のコーラの在庫' do
-  subject{ Stock.new( Juice.new( Juice::COLA, 120 ), 5 ) }
-
-  it{ subject.juice.name.should eq Juice::COLA }
-  it{ subject.juice.price.should eq 120 }
+  before{ @stock = Stock.new( Juice.new( Juice::COLA, 120 ), 5 )  }
+  subject{ @stock }
   its(:num){ should eq 5 }
+
+  describe '在庫情報の確認' do
+    subject{ @stock.juice }
+    its(:name){ should eq Juice::COLA }
+    its(:price){ should eq 120 }
+  end
 end
 
 describe Jihanki do
@@ -39,7 +42,7 @@ describe Jihanki do
     }
   end
 
-  share_examples_for '在庫確認' do |name, num_of_stocks, price|
+  share_examples_for '在庫確認' do |name, num_of_stocks|
     it{
       subject.get_stock(name).num.should eq num_of_stocks
     }
@@ -55,7 +58,13 @@ describe Jihanki do
   end
   
   share_examples_for '購入不可能' do |name|
-    it{ subject.buyable?(name).should be_false }
+    it{ should_not be_buyable name }
+  end
+
+  share_examples_for '想定外の金額を投入するとそのまま返ってくる' do
+    it{ subject.insert(1).should eq 1 }
+    it{ subject.insert(5).should eq 5 }
+    it{ subject.insert(5000).should eq 5000 }
   end
 
   share_examples_for 'デフォルト動作ができる' do
@@ -68,43 +77,13 @@ describe Jihanki do
     subject{ @jihanki }
 
     it_should_behave_like 'デフォルト動作ができる' 
-    it_should_behave_like '在庫確認', Juice::COLA, 5, 120
+    it_should_behave_like '想定外の金額を投入するとそのまま返ってくる' 
+    it_should_behave_like '在庫確認', Juice::COLA, 5
+    it_should_behave_like '在庫確認', Juice::REDBULL, 5
+    it_should_behave_like '在庫確認', Juice::WATER, 5
 
     its(:get_total){ should eq 0 }
     its(:payback){ should eq 0 }
-
-    describe '在庫が5本ある' do
-      subject{ @jihanki.get_stock Juice::COLA }
-      its(:num){ should eq 5 }
-
-      describe 'コーラを指定して在庫取得できる' do
-        subject{ @jihanki.get_stock(Juice::COLA).juice }
-        its(:name){ should eq Juice::COLA }
-        its(:price){ should eq 120 }
-      end
-
-    end
-
-    it 'コーラの在庫が5本ある' do
-      cola = subject.get_stock Juice::COLA
-      cola.num.should eq 5
-      cola.juice.name.should eq Juice::COLA
-      cola.juice.price.should eq 120
-    end
-
-    it 'レッドブルの在庫が5本ある' do
-      redbull = subject.get_stock Juice::REDBULL
-      redbull.num.should eq 5
-      redbull.juice.name.should eq Juice::REDBULL
-      redbull.juice.price.should eq 200
-    end
-
-    it '水の在庫が5本ある' do
-      water = subject.get_stock Juice::WATER
-      water.num.should eq 5
-      water.juice.name.should eq Juice::WATER
-      water.juice.price.should eq 100
-    end
 
     it '投入と払い戻しを繰り返せる' do
       subject.insert Money::YEN_10
@@ -122,11 +101,11 @@ describe Jihanki do
   end
 
   context '10円投入状態' do
-    before do
-      @jihanki = Jihanki.new
-      @jihanki.insert Money::YEN_10
+    subject do
+      jihanki = Jihanki.new
+      jihanki.insert Money::YEN_10
+      jihanki
     end
-    subject{ @jihanki } 
 
     it_should_behave_like 'デフォルト動作ができる' 
     its(:get_total){ should eq 10 }
@@ -175,12 +154,14 @@ describe Jihanki do
     its(:buyable_list){ should include Juice::COLA  }
     its(:buyable_list){ should include Juice::WATER }
     its(:buyable_list){ should_not include Juice::REDBULL }
+
     it 'コーラを購入すると在庫数が減る' do
       juice = subject.buy Juice::COLA
       juice.name.should eq Juice::COLA
       juice.price.should eq 120
       subject.get_stock(Juice::COLA).num.should eq 4
     end
+
     it "コーラを買って売上金額とお釣り(0円)を取得できる" do
       subject.buy 'cola'
       subject.get_sales.should eq 120
@@ -189,20 +170,6 @@ describe Jihanki do
     end
   end
 
-  context '想定外のお金を投入するとそのまま戻ってくる' do
-    it_should_behave_like 'デフォルト動作ができる' 
-    context '1円を投入' do
-      it{ subject.insert(1).should eq 1 }
-    end
-
-    context '5円を投入' do
-      it{ subject.insert(5).should eq 5 }
-    end
-
-    context '5000円を投入' do
-      it{ subject.insert(5000).should eq 5000 }
-    end
-  end
 
   context '二回で合計1050円投入する' do
     subject{
@@ -215,7 +182,6 @@ describe Jihanki do
     its(:get_total){ should eq 1050 }
     it_should_behave_like '購入可能', Juice::COLA, 120, 930
   end
-
 
   context '在庫が切れた状態' do
     subject do
